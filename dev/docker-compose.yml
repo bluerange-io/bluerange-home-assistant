@@ -1,0 +1,16 @@
+name: bluerange-home-assistant-dev
+
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: bluerange-home-assistant-dev
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      - ./config:/config
+      # The integration under development is mounted read-only so that a
+      # restart of the container picks up the current working tree.
+      - ../custom_components/bluerange:/config/custom_components/bluerange:ro

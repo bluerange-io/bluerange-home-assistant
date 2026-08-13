@@ -1,0 +1,47 @@
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+  "A",     # builtins shadowing
+  "ASYNC", # async pitfalls
+  "B",     # bugbear
+  "C4",    # comprehensions
+  "D",     # docstrings
+  "E",     # pycodestyle
+  "F",     # pyflakes
+  "I",     # import order
+  "N",     # naming
+  "PGH",   # pygrep hooks
+  "PT",    # pytest style
+  "RET",   # return statements
+  "RUF",   # ruff specific
+  "SIM",   # simplify
+  "T20",   # no print
+  "TRY",   # exception handling
+  "UP",    # pyupgrade
+  "W",     # warnings
+]
+ignore = [
+  "D203",   # incompatible with D211
+  "D213",   # incompatible with D212
+  "TRY003", # long messages outside the exception class are fine here
+  "RUF012", # Home Assistant declares entity attributes as plain class attributes
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D100", "D103", "D104"]
+# Stand-alone development scripts whose output is the console.
+"dev/config/fake_bluerange.py" = ["T201"]
+"brands/render.py" = ["T201"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["custom_components", "homeassistant", "tests"]
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

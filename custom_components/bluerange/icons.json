@@ -1,0 +1,46 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "boost_mode": { "default": "mdi:rocket-launch-outline" },
+      "child_protection": { "default": "mdi:lock" },
+      "energy_saving_mode": { "default": "mdi:leaf" },
+      "heating_mode": { "default": "mdi:radiator" },
+      "heating_off": { "default": "mdi:radiator-off" },
+      "night_mode": { "default": "mdi:weather-night" },
+      "uses_external_temperature": { "default": "mdi:thermometer-lines" },
+      "window_timer_active": { "default": "mdi:window-open-variant" }
+    },
+    "button": {
+      "automatic": { "default": "mdi:auto-mode" },
+      "energy_saving_mode": { "default": "mdi:leaf" },
+      "heating_mode": { "default": "mdi:radiator" },
+      "heating_off": { "default": "mdi:radiator-off" },
+      "reset_external_temperature": { "default": "mdi:thermometer-off" },
+      "reset_host": { "default": "mdi:restart" },
+      "trigger_adaptation": { "default": "mdi:tune" },
+      "turn_off": { "default": "mdi:lightbulb-off" },
+      "turn_on": { "default": "mdi:lightbulb-on" }
+    },
+    "number": {
+      "setpoint_temperature_adjustment": { "default": "mdi:thermometer-plus" }
+    },
+    "sensor": {
+      "brightness": { "default": "mdi:brightness-6" },
+      "charge_consumption": { "default": "mdi:battery-charging" },
+      "device_status": { "default": "mdi:list-status" },
+      "error_flags": { "default": "mdi:alert-circle-outline" },
+      "mesh_access_duration": { "default": "mdi:timer-outline" },
+      "motion_level": { "default": "mdi:motion-sensor" },
+      "task_tuning": { "default": "mdi:tune-variant" },
+      "valve_position": { "default": "mdi:valve" }
+    },
+    "switch": {
+      "child_protection": { "default": "mdi:lock" },
+      "night_mode": { "default": "mdi:weather-night" },
+      "power": { "default": "mdi:power" }
+    }
+  },
+  "services": {
+    "set_actuator": { "service": "mdi:tune" }
+  }
+}

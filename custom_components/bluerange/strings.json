@@ -1,0 +1,317 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to BlueRange",
+        "description": "Enter the address of your BlueRange server and an API token. Tokens are created in the BlueRange portal on your user profile page.",
+        "data": {
+          "url": "Server URL",
+          "access_token": "API token",
+          "verify_ssl": "Verify the TLS certificate"
+        },
+        "data_description": {
+          "url": "The address of your BlueRange server, e.g. the portal or an on-premise host.",
+          "access_token": "Sent to the server as the X-User-Access-Token header.",
+          "verify_ssl": "Turn this off only for servers with a self-signed certificate."
+        }
+      },
+      "organization": {
+        "title": "Choose the organisation",
+        "description": "This API token has access to more than one BlueRange organisation. Pick the one to mirror; add another config entry for the others.",
+        "data": {
+          "organization": "Organisation"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Renew the BlueRange API token",
+        "description": "The token for {url} is no longer accepted. Enter a new one.",
+        "data": {
+          "access_token": "API token"
+        }
+      },
+      "reconfigure": {
+        "title": "Change the BlueRange connection",
+        "data": {
+          "url": "Server URL",
+          "access_token": "API token",
+          "verify_ssl": "Verify the TLS certificate"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the server.",
+      "invalid_auth": "The server rejected the API token.",
+      "invalid_url": "This is not a valid server URL.",
+      "no_organizations": "This API token has access to no organisation.",
+      "unknown": "Unexpected error while talking to the server."
+    },
+    "abort": {
+      "already_configured": "This BlueRange organisation is already set up.",
+      "reauth_successful": "The API token was updated.",
+      "reconfigure_successful": "The connection was updated.",
+      "wrong_account": "This token belongs to a different BlueRange organisation."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "BlueRange options",
+        "data": {
+          "use_mqtt": "Live updates over MQTT",
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "use_mqtt": "Subscribes to the BlueRange message broker so readings arrive as they happen. Turn this off to poll only. Servers without a broker fall back to polling by themselves.",
+          "scan_interval": "How often the server is polled. One request per device is sent per cycle, so raise this value for large installations. While live updates arrive, polling is only a safety net and happens at most every 15 minutes."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "boost_mode": {
+        "name": "Boost mode{channel}"
+      },
+      "child_protection": {
+        "name": "Child lock{channel}"
+      },
+      "energy_saving_mode": {
+        "name": "Energy saving mode{channel}"
+      },
+      "heating_mode": {
+        "name": "Heating mode{channel}"
+      },
+      "heating_off": {
+        "name": "Heating off{channel}"
+      },
+      "night_mode": {
+        "name": "Night mode{channel}"
+      },
+      "occupancy": {
+        "name": "Occupancy{channel}"
+      },
+      "presence": {
+        "name": "Presence{channel}"
+      },
+      "uses_external_temperature": {
+        "name": "Uses external temperature{channel}"
+      },
+      "window_timer_active": {
+        "name": "Open window detected{channel}"
+      }
+    },
+    "button": {
+      "automatic": {
+        "name": "Automatic{channel}"
+      },
+      "energy_saving_mode": {
+        "name": "Energy saving mode{channel}"
+      },
+      "heating_mode": {
+        "name": "Heating mode{channel}"
+      },
+      "heating_off": {
+        "name": "Heating off{channel}"
+      },
+      "reset_external_temperature": {
+        "name": "Reset external temperature{channel}"
+      },
+      "reset_host": {
+        "name": "Restart host{channel}"
+      },
+      "trigger_adaptation": {
+        "name": "Run valve adaptation{channel}"
+      },
+      "turn_off": {
+        "name": "Turn off{channel}"
+      },
+      "turn_on": {
+        "name": "Turn on{channel}"
+      }
+    },
+    "climate": {
+      "channel": {
+        "name": "Channel {index}"
+      }
+    },
+    "cover": {
+      "channel": {
+        "name": "Channel {index}"
+      }
+    },
+    "light": {
+      "channel": {
+        "name": "Channel {index}"
+      }
+    },
+    "number": {
+      "external_temperature": {
+        "name": "External temperature{channel}"
+      },
+      "max_temperature": {
+        "name": "Maximum temperature{channel}"
+      },
+      "min_temperature": {
+        "name": "Minimum temperature{channel}"
+      },
+      "setpoint_temperature_adjustment": {
+        "name": "Setpoint offset{channel}"
+      }
+    },
+    "sensor": {
+      "actual_flow": {
+        "name": "Flow{channel}"
+      },
+      "actual_temperature": {
+        "name": "Temperature{channel}"
+      },
+      "ambient_light_level": {
+        "name": "Ambient light level{channel}"
+      },
+      "ambient_noise": {
+        "name": "Ambient noise{channel}"
+      },
+      "battery": {
+        "name": "Battery{channel}"
+      },
+      "battery_voltage": {
+        "name": "Battery voltage"
+      },
+      "brightness": {
+        "name": "Brightness{channel}"
+      },
+      "calibrated_rssi": {
+        "name": "Calibrated signal strength"
+      },
+      "charge_consumption": {
+        "name": "Charge consumption{channel}"
+      },
+      "co2": {
+        "name": "CO2{channel}"
+      },
+      "device_status": {
+        "name": "Status",
+        "state": {
+          "compliant": "Compliant",
+          "deleted": "Deleted",
+          "deletion_pending": "Deletion pending",
+          "enrollment_pending": "Enrollment pending",
+          "inactive": "Inactive",
+          "noncompliant": "Not compliant",
+          "withdraw_pending": "Withdrawal pending",
+          "withdrawn": "Withdrawn"
+        }
+      },
+      "energy_use": {
+        "name": "Energy use{channel}"
+      },
+      "error_flags": {
+        "name": "Error flags{channel}"
+      },
+      "external_temperature": {
+        "name": "External temperature{channel}"
+      },
+      "humidity": {
+        "name": "Humidity{channel}"
+      },
+      "input_power": {
+        "name": "Input power{channel}"
+      },
+      "last_connection": {
+        "name": "Last connection"
+      },
+      "light_source_on_time": {
+        "name": "Light source on time{channel}"
+      },
+      "max_temperature": {
+        "name": "Maximum temperature{channel}"
+      },
+      "mesh_access_duration": {
+        "name": "Mesh access duration{channel}"
+      },
+      "min_temperature": {
+        "name": "Minimum temperature{channel}"
+      },
+      "motion_level": {
+        "name": "Motion level{channel}"
+      },
+      "power_on_time": {
+        "name": "Power on time{channel}"
+      },
+      "setpoint_temperature": {
+        "name": "Setpoint temperature{channel}"
+      },
+      "setpoint_temperature_calculated": {
+        "name": "Calculated setpoint temperature{channel}"
+      },
+      "task_tuning": {
+        "name": "Task tuning{channel}"
+      },
+      "temperature": {
+        "name": "Temperature{channel}"
+      },
+      "transmit_power": {
+        "name": "Transmit power"
+      },
+      "valve_position": {
+        "name": "Valve position{channel}"
+      },
+      "voc_concentration": {
+        "name": "VOC concentration{channel}"
+      }
+    },
+    "switch": {
+      "child_protection": {
+        "name": "Child lock{channel}"
+      },
+      "night_mode": {
+        "name": "Night mode{channel}"
+      },
+      "power": {
+        "name": "Power{channel}"
+      }
+    }
+  },
+  "services": {
+    "set_actuator": {
+      "name": "Set actuator",
+      "description": "Writes a value to a BlueRange actuator directly. Useful for vendor specific actuators that have no entity of their own.",
+      "fields": {
+        "device_id": {
+          "name": "Device",
+          "description": "The BlueRange device to write to."
+        },
+        "control_type": {
+          "name": "Actuator type",
+          "description": "The BlueRange actuator type, for example SET_SETPOINT_TEMPERATURE."
+        },
+        "index": {
+          "name": "Index",
+          "description": "The channel of the actuator, for devices that expose the same type more than once."
+        },
+        "module": {
+          "name": "Module",
+          "description": "The firmware module owning the actuator. Leave empty to use the one from the device metadata."
+        },
+        "value": {
+          "name": "Value",
+          "description": "The value to write."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "device_not_found": {
+      "message": "No device found for {device_id}."
+    },
+    "not_a_bluerange_device": {
+      "message": "{device_id} is not a BlueRange device."
+    },
+    "unsupported_hvac_mode": {
+      "message": "This thermostat does not support the mode {hvac_mode}."
+    },
+    "unsupported_preset_mode": {
+      "message": "This thermostat does not support the preset {preset_mode}."
+    }
+  }
+}

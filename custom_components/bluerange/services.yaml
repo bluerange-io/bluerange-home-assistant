@@ -1,0 +1,31 @@
+set_actuator:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: bluerange
+    control_type:
+      required: true
+      example: SET_SETPOINT_TEMPERATURE
+      selector:
+        text:
+    index:
+      required: false
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 255
+          mode: box
+    module:
+      required: false
+      example: core
+      selector:
+        text:
+    value:
+      required: true
+      example: 21.5
+      selector:
+        text:
