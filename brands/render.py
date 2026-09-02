@@ -1,4 +1,4 @@
-"""Renders the logo PNGs that Home Assistant loads from the integration.
+"""Renders the icon and logo PNGs that Home Assistant loads from the integration.
 
 Needs ``rsvg-convert`` (``brew install librsvg``) and Pillow:
 
@@ -7,7 +7,9 @@ Needs ``rsvg-convert`` (``brew install librsvg``) and Pillow:
 Since Home Assistant 2026.3 dropped the brands repository for custom
 integrations, these files are served from ``custom_components/bluerange/brand/``
 through ``/api/brands/integration/bluerange/{image}``. ``logo.svg`` and
-``dark_logo.svg`` carry the black and the white wordmark.
+``dark_logo.svg`` carry the black and the white wordmark; ``original/icon.png``
+and ``original/icon_dark.png`` carry the icon mark for the light and the dark
+theme on a transparent background.
 """
 
 from __future__ import annotations
@@ -25,6 +27,7 @@ TARGET = HERE.parent / "custom_components" / "bluerange" / "brand"
 #: with rather than enlarging a small render.
 SOURCE_HEIGHT = 1024
 
+ICON_SIZES = (256, 512)
 LOGO_HEIGHTS = (256, 512)
 
 
@@ -58,7 +61,20 @@ def suffix(index: int) -> str:
 
 
 def main() -> int:
-    """Render every logo file the integration ships with."""
+    """Render every icon and logo file the integration ships with."""
+    for prefix, stem in (("", "icon"), ("dark_", "icon_dark")):
+        source = HERE / "original" / f"{stem}.png"
+        if not source.exists():
+            print(f"original/{stem}.png: skipped (source missing)")
+            continue
+        mark = Image.open(source).convert("RGBA")
+        for index, size in enumerate(ICON_SIZES):
+            name = f"{prefix}icon{suffix(index)}.png"
+            mark.resize((size, size), Image.LANCZOS).save(
+                TARGET / name, optimize=True
+            )
+            print(f"{name}: {size}x{size}")
+
     for prefix, stem in (("", "logo"), ("dark_", "dark_logo")):
         source = rasterise(HERE / f"{stem}.svg", "-h", str(SOURCE_HEIGHT))
         logo = trim(Image.open(source).convert("RGBA"))
