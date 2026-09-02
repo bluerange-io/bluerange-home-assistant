@@ -12,5 +12,19 @@ services:
     volumes:
       - ./config:/config
       # The integration under development is mounted read-only so that a
-      # restart of the container picks up the current working tree.
-      - ../custom_components/bluerange:/config/custom_components/bluerange:ro
+      # restart of the container picks up the current working tree. Docker
+      # Desktop's virtiofs collapses nested bind mounts on the same share,
+      # so the integration is mounted at a separate top-level path and
+      # linked into /config/custom_components by the entrypoint below.
+      - ../custom_components/bluerange:/opt/bluerange:ro
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        target=/config/custom_components/bluerange
+        mkdir -p /config/custom_components
+        if [ ! -L "$$target" ]; then
+          rm -rf "$$target" 2>/dev/null || true
+          ln -sfn /opt/bluerange "$$target"
+        fi
+        exec /init
