@@ -1,14 +1,15 @@
-"""Renders the brand PNGs that home-assistant/brands expects.
+"""Renders the icon and logo PNGs that Home Assistant loads from the integration.
 
 Needs ``rsvg-convert`` (``brew install librsvg``) and Pillow:
 
     python3 brands/render.py
 
-The sizes come from the brands repository: a square icon at 256 and 512 pixels,
-and a logo whose shortest side is 256 and 512 pixels.  The logo is trimmed to its
-content, as the brands repository asks for.  ``logo.svg`` and ``dark_logo.svg``
-carry the black and the white wordmark respectively.  The icon carries its own
-background and reads on either theme, so it needs no dark variant.
+Since Home Assistant 2026.3 dropped the brands repository for custom
+integrations, these files are served from ``custom_components/bluerange/brand/``
+through ``/api/brands/integration/bluerange/{image}``. ``logo.svg`` and
+``dark_logo.svg`` carry the black and the white wordmark; ``original/icon.png``
+and ``original/icon_dark.png`` carry the icon mark for the light and the dark
+theme on a transparent background.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ import sys
 from PIL import Image
 
 HERE = Path(__file__).parent
+TARGET = HERE.parent / "custom_components" / "bluerange" / "brand"
 
 #: Rendered before scaling, so that trimming and resampling have pixels to work
 #: with rather than enlarging a small render.
@@ -54,24 +56,22 @@ def to_height(image: Image.Image, height: int) -> Image.Image:
 
 
 def suffix(index: int) -> str:
-    """Return the brands suffix for the first or the second size."""
+    """Return the file name suffix for the first or the second size."""
     return "" if index == 0 else "@2x"
 
 
 def main() -> int:
-    """Render every file the brands repository accepts for this integration."""
-    icon_svg = HERE / "icon.svg"
-    if icon_svg.exists():
-        source = rasterise(icon_svg, "-w", str(SOURCE_HEIGHT), "-h", str(SOURCE_HEIGHT))
-        # The icon is a full bleed tile, so there is nothing transparent to trim.
-        icon = Image.open(source).convert("RGB")
+    """Render every icon and logo file the integration ships with."""
+    for prefix, stem in (("", "icon"), ("dark_", "icon_dark")):
+        source = HERE / "original" / f"{stem}.png"
+        if not source.exists():
+            print(f"original/{stem}.png: skipped (source missing)")
+            continue
+        mark = Image.open(source).convert("RGBA")
         for index, size in enumerate(ICON_SIZES):
-            name = f"icon{suffix(index)}.png"
-            icon.resize((size, size), Image.LANCZOS).save(HERE / name, optimize=True)
+            name = f"{prefix}icon{suffix(index)}.png"
+            mark.resize((size, size), Image.LANCZOS).save(TARGET / name, optimize=True)
             print(f"{name}: {size}x{size}")
-        source.unlink()
-    else:
-        print("icon.svg: skipped (source missing, awaiting new artwork)")
 
     for prefix, stem in (("", "logo"), ("dark_", "dark_logo")):
         source = rasterise(HERE / f"{stem}.svg", "-h", str(SOURCE_HEIGHT))
@@ -79,7 +79,7 @@ def main() -> int:
         for index, height in enumerate(LOGO_HEIGHTS):
             scaled = to_height(logo, height)
             name = f"{prefix}logo{suffix(index)}.png"
-            scaled.save(HERE / name, optimize=True)
+            scaled.save(TARGET / name, optimize=True)
             print(f"{name}: {scaled.width}x{scaled.height}")
         source.unlink()
 
