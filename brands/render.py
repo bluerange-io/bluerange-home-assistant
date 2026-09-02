@@ -70,9 +70,7 @@ def main() -> int:
         mark = Image.open(source).convert("RGBA")
         for index, size in enumerate(ICON_SIZES):
             name = f"{prefix}icon{suffix(index)}.png"
-            mark.resize((size, size), Image.LANCZOS).save(
-                TARGET / name, optimize=True
-            )
+            mark.resize((size, size), Image.LANCZOS).save(TARGET / name, optimize=True)
             print(f"{name}: {size}x{size}")
 
     for prefix, stem in (("", "logo"), ("dark_", "dark_logo")):
