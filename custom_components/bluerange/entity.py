@@ -235,9 +235,11 @@ def async_add_device_entities(
     Devices may be enrolled while Home Assistant is running, so the builder is
     re-run after every update cycle and anything not seen before is added.  The
     coordinator hands out the very same layout object as long as a device's set of
-    controls is unchanged, which is what keeps the steady state cheap.
+    controls is unchanged, which is what keeps the steady state cheap.  A device
+    that left the inventory is forgotten, so that its entities are created again
+    should it ever come back.
     """
-    known: set[str] = set()
+    known: dict[str, set[str]] = {}
     processed: dict[str, DeviceLayout] = {}
 
     @callback
@@ -245,16 +247,20 @@ def async_add_device_entities(
         data = coordinator.data
         if data is None:
             return
+        for device_uuid in processed.keys() - data.layouts.keys():
+            del processed[device_uuid]
+            known.pop(device_uuid, None)
         new: list[BlueRangeEntity] = []
         for device_uuid, layout in data.layouts.items():
             if processed.get(device_uuid) is layout:
                 continue
             processed[device_uuid] = layout
+            seen = known.setdefault(device_uuid, set())
             for entity in build(device_uuid, layout):
                 unique_id = entity.unique_id
-                if unique_id is None or unique_id in known:
+                if unique_id is None or unique_id in seen:
                     continue
-                known.add(unique_id)
+                seen.add(unique_id)
                 new.append(entity)
         if new:
             async_add_entities(new)

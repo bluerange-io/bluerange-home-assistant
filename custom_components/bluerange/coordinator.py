@@ -12,6 +12,7 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.debounce import Debouncer
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
@@ -161,6 +162,9 @@ class BlueRangeDataUpdateCoordinator(DataUpdateCoordinator[BlueRangeData]):
             await self._async_refresh_inventory()
 
         await self._async_refresh_readings()
+        # Only once the cycle succeeded, so that the snapshot handed to the
+        # entities never lists a device that is gone from the registry.
+        self._async_remove_stale_devices()
 
         return BlueRangeData(
             devices=dict(self._devices),
@@ -224,6 +228,26 @@ class BlueRangeDataUpdateCoordinator(DataUpdateCoordinator[BlueRangeData]):
         }
         self._inventory_refreshed = dt_util.utcnow()
         _LOGGER.debug("Refreshed inventory: %d device(s)", len(active))
+
+    @callback
+    def _async_remove_stale_devices(self) -> None:
+        """Remove the devices that left the inventory from the device registry.
+
+        Home Assistant keeps a device that is no longer provided, where it would sit
+        with unavailable entities forever.  A device may also be known to another
+        integration through its Bluetooth connection, so only this entry is
+        detached from it: that removes its entities, and the device itself once no
+        other entry refers to it.
+        """
+        registry = dr.async_get(self.hass)
+        entry_id = self.config_entry.entry_id
+        for device in dr.async_entries_for_config_entry(registry, entry_id):
+            uuids = {value for domain, value in device.identifiers if domain == DOMAIN}
+            # The organisation is registered under the entry id and always stays.
+            if not uuids or entry_id in uuids or not uuids.isdisjoint(self._devices):
+                continue
+            _LOGGER.debug("Removing %s, which left the inventory", device.name)
+            registry.async_update_device(device.id, remove_config_entry_id=entry_id)
 
     async def _async_refresh_readings(self) -> None:
         """Reload the sensor metadata and last values of every known device."""
